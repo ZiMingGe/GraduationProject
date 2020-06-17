@@ -517,20 +517,14 @@ const middleware = require('./middleware')         //自定义的一些中间件
 const app=new Koa()
 middleware(app)
 ```
-## 七、给返回的图片加上相应的前缀
-如用户头像,因为是用的本地资源,为了方便前端使用,返回完整的地址  http://localhost:5000/images/01.png
-```javascript
-// 参考：https://koajs.com/#request
-let origin = ctx.request.origin
-re.avatar = re.avatar? origin+re.avatar : ''
-```
-## 八、补充mongodb分页数据（见上面的controller和service）
+
+## 七、补充mongodb分页数据（见上面的controller和service）
 1. ![分页数据](./md/mongodb分页.png)
 
 2. [mongodb的查询条件写法](https://docs.mongodb.com/manual/reference/operator/query/)
 3. [mongoose使用](https://mongoosejs.com/docs/api.html#model_Model.find)
 
-## 九、 加入log4js写日志  
+## 八、 加入log4js写日志  
 `yarn add log4js`  
 准备好 `//src/config/log_config.js`日志配置文件 和 `//src/util/logUtil.js`写日志助手    
 在 `//src/app.js`中加入中间件  注意中间件的顺序
@@ -552,43 +546,9 @@ app.use(async (ctx, next) => {       // 写日志的中间件, 此中间件应�
     }
 })
 ```
-## 十、 头像上传处理
-```javascript
-/*
-    注意客户端传递的_id值,不要随意乱写,即便是不存在的id,否则后台会出现转换错误, 因为mongodb是ObjectId, 最起码给的_id字符串要先能转换成ObjectId
-    uploadUrl() {
-        return `${apiAddr}user/uploadAvatar?_id=5c41572ec4036b36206c9eaf`
-    },
-*/
-// 路由
-apiRouter.post('/user/uploadAvatar',userCtrl.uploadAvatar) //更换头像
 
-// controller
-uploadAvatar: async(ctx) => {
-    let uploadFiles = ctx.request.files
-    let {_id} = ctx.request.query
-    let uploadImg = uploadFiles
-    let origin = ctx.request.origin
-    let avatarUrl = path.basename(uploadImg.file.path)
 
-    let re = await userService.uploadAvatar(_id,avatarUrl)
-    ctx.body = result.success('更新成功',origin+"/upload/"+avatarUrl)
-}
-// service
-uploadAvatar: async(_id,avatarUrl) => {
-    const u = await User.findById(_id)
-    let result = { code : 1 }
-    if(u) {
-        // 更新头像       
-        let updating = { avatar: avatarUrl }
-        let re = await User.updateOne({_id},updating)
-        // result = { code : 1 }            
-    }
-    return result
-}
-```
-
-## 十一、 Joi数据验证
+## 十、 Joi数据验证
 1. 安装：`yarn add joi`  [joi github](https://github.com/hapijs/joi)
 2. 使用： [参考1](https://blog.csdn.net/u013707249/article/details/79034138)   [参考2](https://www.cnblogs.com/zzbo/p/5906101.html)
   - `//src/models/validators/UserJoi.js`
@@ -629,8 +589,7 @@ if(error) {
     return
 }
 ```
-3. 效果    
-![用户验证](./md/joi.png)
+
 
 
 
